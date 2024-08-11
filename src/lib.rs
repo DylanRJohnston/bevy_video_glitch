@@ -362,8 +362,9 @@ pub struct VideoGlitchSettings {
     /// meaning the columns and rows each sum to 1.
     pub color_aberration: Mat3,
     // WebGL2 structs must be 16 byte aligned.
+
     #[cfg(feature = "webgl2")]
-    webgl2_padding: Vec2,
+    pub webgl2_padding: Vec2,
 }
 
 impl Default for VideoGlitchSettings {
@@ -371,6 +372,8 @@ impl Default for VideoGlitchSettings {
         Self {
             intensity: 1.0,
             color_aberration: Mat3::IDENTITY,
+            #[cfg(feature = "webgl2")]
+            webgl2_padding: Vec2::ZERO,
         }
     }
 }

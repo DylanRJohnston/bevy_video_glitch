@@ -108,15 +108,15 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32>
         fragColor *= 1.0 - (0.15 * noise);
     }
     let C = settings.color_aberration;
-    let primary = dot(C[0], fragColor);
-    // let primary = settings.color_indices[0];
-    // let secondary = settings.color_indices[1];
-    // let tertiary = settings.color_indices[2];
+    // let primary = dot(C[0], fragColor);
+    // // let primary = settings.color_indices[0];
+    // // let secondary = settings.color_indices[1];
+    // // let tertiary = settings.color_indices[2];
 
-    // Shift green/blue channels (using the red channel)
-    fragColor =
-        C[0] * primary +
-        C[1] * mix(primary, dot(textureSample(screen_texture, texture_sampler, vec2<f32>(xpos + noise * 0.05, uv.y)).rgb, C[1]), 0.25) +
-        C[2] * mix(primary, dot(textureSample(screen_texture, texture_sampler, vec2<f32>(xpos - noise * 0.05, uv.y)).rgb, C[2]), 0.25);
+    // // Shift green/blue channels (using the red channel)
+    // fragColor =
+    //     C[0] * primary +
+    //     C[1] * mix(primary, dot(textureSample(screen_texture, texture_sampler, vec2<f32>(xpos + noise * 0.05, uv.y)).rgb, C[1]), 0.25) +
+    //     C[2] * mix(primary, dot(textureSample(screen_texture, texture_sampler, vec2<f32>(xpos - noise * 0.05, uv.y)).rgb, C[2]), 0.25);
     return vec4<f32>(fragColor, texColor.a);
 }
