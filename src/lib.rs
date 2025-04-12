@@ -26,7 +26,6 @@ use bevy::{
             ShaderType, TextureFormat, TextureSampleType,
         },
         renderer::{RenderContext, RenderDevice},
-        texture::BevyDefault,
         view::ViewTarget,
         RenderApp,
     },
@@ -334,6 +333,7 @@ impl FromWorld for VideoGlitchPipeline {
                 depth_stencil: None,
                 multisample: MultisampleState::default(),
                 push_constant_ranges: vec![],
+                zero_initialize_workgroup_memory: true,
             });
 
         Self {
@@ -362,7 +362,6 @@ pub struct VideoGlitchSettings {
     /// meaning the columns and rows each sum to 1.
     pub color_aberration: Mat3,
     // WebGL2 structs must be 16 byte aligned.
-
     #[cfg(feature = "webgl2")]
     pub webgl2_padding: Vec2,
 }

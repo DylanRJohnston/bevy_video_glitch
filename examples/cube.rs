@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{math::vec2, prelude::*};
 use bevy_video_glitch::*;
 
 fn main() {
@@ -17,15 +17,12 @@ fn setup(
 ) {
     // camera
     commands.spawn((
-        Camera3dBundle {
-            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 5.0))
-                .looking_at(Vec3::default(), Vec3::Y),
-            camera: Camera {
-                clear_color: Color::WHITE.into(),
-                ..default()
-            },
+        Camera3d::default(),
+        Camera {
+            clear_color: ClearColorConfig::Custom(Color::WHITE),
             ..default()
         },
+        Transform::from_translation(Vec3::new(0.0, 0.0, 5.0)).looking_at(Vec3::default(), Vec3::Y),
         // Add the setting to the camera.
         //
         // This component is also used to determine on which camera to run the
@@ -34,24 +31,22 @@ fn setup(
             intensity: 0.02,
             color_aberration: Mat3::from_cols_array(&[0.5, 0.5, 0.0, 0.0, 0.5, 0.5, 0.5, 0.0, 0.5])
                 .transpose(),
+            webgl2_padding: vec2(0.0, 0.0),
         },
     ));
 
     // cube
     commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Mesh::from(Cuboid::from_length(1.0))),
-            material: materials.add(Color::srgb(0.8, 0.7, 0.6)),
-            transform: Transform::from_xyz(0.0, 0.5, 0.0),
-            ..default()
-        },
+        Mesh3d(meshes.add(Mesh::from(Cuboid::from_length(1.0)))),
+        MeshMaterial3d(materials.add(Color::srgb(0.8, 0.7, 0.6))),
+        Transform::from_xyz(0.0, 0.5, 0.0),
         Rotates,
     ));
     // light
-    commands.spawn(PointLightBundle {
-        transform: Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)),
-        ..default()
-    });
+    commands.spawn((
+        PointLight::default(),
+        Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)),
+    ));
 }
 
 #[derive(Component)]
@@ -60,15 +55,15 @@ struct Rotates;
 /// Rotates any entity around the x and y axis
 fn rotate(time: Res<Time>, mut query: Query<&mut Transform, With<Rotates>>) {
     for mut transform in &mut query {
-        transform.rotate_x(0.55 * time.delta_seconds());
-        transform.rotate_z(0.15 * time.delta_seconds());
+        transform.rotate_x(0.55 * time.delta_secs());
+        transform.rotate_z(0.15 * time.delta_secs());
     }
 }
 
 // Change the intensity over time to show that the effect is controlled from the main world
 fn update_settings(mut settings: Query<&mut VideoGlitchSettings>, time: Res<Time>) {
     for mut setting in &mut settings {
-        let mut intensity = time.elapsed_seconds();
+        let mut intensity = time.elapsed_secs();
         // Make it loop periodically.
         intensity = intensity.sin();
         // Remap it to 0..1 because the intensity can't be negative.
